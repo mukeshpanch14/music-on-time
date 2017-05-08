@@ -39,6 +39,8 @@ class FrontFrame extends JFrame {
 
 	ArrayList<String> Song_list=new ArrayList<String>();
 
+	int shut_sleep_flag=0;
+
 	FrontFrame(){
 		
 		Font font=new Font(getTitle(), Font.BOLD,16);
@@ -132,7 +134,7 @@ class FrontFrame extends JFrame {
 			}
 		);
 
-		setTitle("LazyPlayer");
+		setTitle("Second_Dazz");
 		setSize(400,300);
 		setLocation(500,200);
 		setLayout(null);
@@ -146,12 +148,13 @@ class FrontFrame extends JFrame {
 	public void actionPerformed(ActionEvent e){
 		//tt.setText("Test");
 
-		System.out.println(e.getActionCommand());
+		/*System.out.println(e.getActionCommand());*/
 
 
 		if(e.getActionCommand()=="Browse"){
 			class FileChooserDemo extends JFrame implements ActionListener{
 				FileChooserDemo(){
+					super("Select Songs");
 					Container c=getContentPane();
 					this.setVisible(true);
 					this.setSize(500,400);
@@ -181,7 +184,7 @@ class FrontFrame extends JFrame {
 					tt.setText(allfile);
 					//new Timer(path);
 
-					System.out.println(allfile);
+					/*System.out.println(allfile);*/
 
 					this.setVisible(false);
 				}
@@ -190,51 +193,41 @@ class FrontFrame extends JFrame {
 		}
 		
 			String str_period_hour=period_hour.getText();
-
 			String str_period_min=period_min.getText();
 			String str_hour_time=hour_field.getText();
 			String str_min_time=min_field.getText();
 
-			
-			
+			period_hour_int=changeInt(str_period_hour.trim());				
+			period_min_int=changeInt(str_period_min.trim());
+			hour_time=changeInt(str_hour_time.trim());
+			min_time=changeInt(str_min_time.trim());
 
-
+		if(str_am_pm.equals("PM")){
+			hour_time+=12;		
+		}	
 
 		if(e.getActionCommand()=="Start & Shut Down"){
-			
-			try{
-				/*period_hour_int=(int)Double.parseDouble(str_period_hour);
-				period_min_int=(int)Double.parseDouble(str_period_min);
-				hour_time=(int)Double.parseDouble(str_hour_time);
-				min_time=(int)Double.parseDouble(str_min_time);*/
-
-				period_hour_int=changeInt(str_period_hour.trim());				
-				period_min_int=changeInt(str_period_min.trim());
-				hour_time=changeInt(str_hour_time.trim());
-				min_time=changeInt(str_min_time.trim());
-
-				/*period_hour_int=NumberUtils.toInt(str_period_hour,0);
-				period_min_int=NumberUtils.toInt(str_period_min,0);
-				hour_time=NumberUtils.toInt(str_hour_time,0);
-				min_time=NumberUtils.toInt(str_min_time,0);*/
-
-
-
+		try{
+				shut_sleep_flag=1;
 				time_check();
+				
+
+			}catch(NumberFormatException ne){
+				System.out.println("not a number");
+			}
+		}
+
+		if(e.getActionCommand()=="Start & Sleep"){
+			try{
+				shut_sleep_flag=2;
+				time_check();
+				
 
 			}catch(NumberFormatException ne){
 				System.out.println("not a number");
 			}
 
-
-
-
 		}
-
-		if(e.getActionCommand()=="Start & Sleep"){
-
-		}
-
 		
 	}
 }
@@ -251,7 +244,7 @@ class FrontFrame extends JFrame {
 			if(hour==hour_time){
 				if(minute==min_time){
 					try{
-					new Music(Song_list).PlayMusic();
+					new Music(Song_list,period_hour_int,period_min_int).PlayMusic(shut_sleep_flag);
 					break;
 					}catch(Exception ex){
 						ex.printStackTrace();
@@ -279,13 +272,10 @@ class FrontFrame extends JFrame {
 		}
 		return n;
 	}
-		
-	
+			
 	
 	public static void main(String[] args){
 		FrontFrame fc=new FrontFrame();
-		//new Timer().disp();
 		
-
 	}
 }
